@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 HOME="/home/ian"
+MY_SRC="$HOME/projects/my-setup"
 
-AWESOME_SRC="$HOME/projects/my-setup/awesome"
+AWESOME_SRC="$MY_SRC/awesome"
 AWESOME_DIR="$HOME/.config/awesome"
 
 echo "RUN - $(date)"

@@ -572,7 +572,7 @@ beautiful.useless_gap = 4
 ---- Autostart
 -------------------------------
 
-awful.spawn.with_shell("picom --config ~/.config/picom.conf")
+awful.spawn.with_shell("picom --config ~/projects/my-setup/picom.conf")
 awful.spawn.with_shell("redshift -P -O 4500")
 awful.spawn.with_shell("nm-applet")
 awful.spawn.with_shell("blueman-applet")
