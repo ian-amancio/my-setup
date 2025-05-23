@@ -18,7 +18,10 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
--- {{{ Error handling
+-------------------------------
+---- Error handling
+-------------------------------
+
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
 if awesome.startup_errors then
@@ -45,12 +48,16 @@ do
     in_error = false
   end)
 end
--- }}}
 
--- {{{ Variable definitions
+-------------------------------
+---- Variable definitions
+-------------------------------
+
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
--- beautiful.init(gears.filesystem.get_themes_dir() .. "theme.lua")
+local user_theme = dofile("/home/ian/projects/my-setup/awesome/theme.lua")
+
+for k, v in pairs(user_theme) do beautiful[k] = v end
 
 terminal               = "kitty"
 editor                 = os.getenv("EDITOR") or "nano"
@@ -62,23 +69,12 @@ awful.layout.layouts   = {
   awful.layout.suit.tile,
   awful.layout.suit.tile.left,
   awful.layout.suit.floating,
-  -- awful.layout.suit.tile.bottom,
-  -- awful.layout.suit.tile.top,
-  -- awful.layout.suit.fair,
-  -- awful.layout.suit.fair.horizontal,
-  -- awful.layout.suit.spiral,
-  -- awful.layout.suit.spiral.dwindle,
-  -- awful.layout.suit.max,
-  -- awful.layout.suit.max.fullscreen,
-  -- awful.layout.suit.magnifier,
-  -- awful.layout.suit.corner.nw,
-  -- awful.layout.suit.corner.ne,
-  -- awful.layout.suit.corner.sw,
-  -- awful.layout.suit.corner.se,
 }
--- }}}
 
--- {{{ Menu
+-------------------------------
+---- Menu
+-------------------------------
+
 -- Create a launcher widget and a main menu
 myawesomemenu          = {
   { "hotkeys",     function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
@@ -103,7 +99,10 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- Keyboard map indicator and switcher
 -- mykeyboardlayout = awful.widget.keyboardlayout()
 
--- {{{ Wibar
+-------------------------------
+---- Wibar
+-------------------------------
+
 -- Create a textclock widget
 mytextclock            = wibox.widget.textclock()
 
@@ -188,7 +187,11 @@ awful.screen.connect_for_each_screen(function(s)
   }
 
   -- Create the wibox
-  s.mywibox = awful.wibar({ position = "top", screen = s })
+  s.mywibox = awful.wibar({
+    position = "top",
+    screen = s,
+    bg = "#000000FF"
+  })
 
   -- Add widgets to the wibox
   s.mywibox:setup {
@@ -209,27 +212,26 @@ awful.screen.connect_for_each_screen(function(s)
     },
   }
 end)
--- }}}
 
--- {{{ Mouse bindings
+-------------------------------
+---- Mouse bindings
+-------------------------------
+
 root.buttons(gears.table.join(
-  awful.button({}, 3, function() mymainmenu:toggle() end),
-  awful.button({}, 4, awful.tag.viewnext),
-  awful.button({}, 5, awful.tag.viewprev)
+  awful.button({}, 3, function() mymainmenu:toggle() end)
+-- awful.button({}, 4, awful.tag.viewnext),
+-- awful.button({}, 5, awful.tag.viewprev)
 ))
--- }}}
 
--- {{{ Key bindings
+-------------------------------
+---- Key bindings
+-------------------------------
+
 globalkeys = gears.table.join(
-  awful.key({ modkey, }, "s", hotkeys_popup.show_help,
-    { description = "show help", group = "awesome" }),
-  awful.key({ modkey, }, "Left", awful.tag.viewprev,
-    { description = "view previous", group = "tag" }),
-  awful.key({ modkey, }, "Right", awful.tag.viewnext,
-    { description = "view next", group = "tag" }),
-  awful.key({ modkey, }, "Escape", awful.tag.history.restore,
-    { description = "go back", group = "tag" }),
-
+  awful.key({ modkey, }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
+  awful.key({ modkey, }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
+  awful.key({ modkey, }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
+  awful.key({ modkey, }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
   awful.key({ modkey, }, "j",
     function()
       awful.client.focus.byidx(1)
@@ -318,6 +320,7 @@ globalkeys = gears.table.join(
   -- Menubar
   awful.key({ modkey }, "p", function() menubar.show() end,
     { description = "show the menubar", group = "launcher" }),
+
   -- Print
   awful.key({}, "Print", function() awful.spawn("gnome-screenshot -i") end)
 )
@@ -432,9 +435,11 @@ clientbuttons = gears.table.join(
 
 -- Set keys
 root.keys(globalkeys)
--- }}}
 
--- {{{ Rules
+-------------------------------
+---- Rules
+-------------------------------
+
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
   -- All clients will match this rule.
@@ -487,18 +492,20 @@ awful.rules.rules = {
   },
 
   -- Add titlebars to normal clients and dialogs
-  {
-    rule_any = { type = { "normal", "dialog" } },
-    properties = { titlebars_enabled = true }
-  },
+  -- {
+  --   rule_any = { type = { "normal", "dialog" } },
+  --   properties = { titlebars_enabled = true }
+  -- },
 
   -- Set Firefox to always map on the tag named "2" on screen 1.
   -- { rule = { class = "Firefox" },
   --   properties = { screen = 1, tag = "2" } },
 }
--- }}}
 
--- {{{ Signals
+-------------------------------
+---- Signals
+-------------------------------
+
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function(c)
   -- Set the windows at the slave,
@@ -513,46 +520,6 @@ client.connect_signal("manage", function(c)
   end
 end)
 
--- Add a titlebar if titlebars_enabled is set to true in the rules.
---client.connect_signal("request::titlebars", function(c)
---    -- buttons for the titlebar
---    local buttons = gears.table.join(
---        awful.button({ }, 1, function()
---            c:emit_signal("request::activate", "titlebar", {raise = true})
---            awful.mouse.client.move(c)
---        end),
---        awful.button({ }, 3, function()
---            c:emit_signal("request::activate", "titlebar", {raise = true})
---            awful.mouse.client.resize(c)
---        end)
---    )
-
---    awful.titlebar(c) : setup {
---        { -- Left
---            awful.titlebar.widget.iconwidget(c),
---            buttons = buttons,
---            layout  = wibox.layout.fixed.horizontal
---        },
---        { -- Middle
---            { -- Title
---                align  = "center",
---                widget = awful.titlebar.widget.titlewidget(c)
---            },
---            buttons = buttons,
---            layout  = wibox.layout.flex.horizontal
---        },
---        { -- Right
---            awful.titlebar.widget.floatingbutton (c),
---            awful.titlebar.widget.maximizedbutton(c),
---            awful.titlebar.widget.stickybutton   (c),
---            awful.titlebar.widget.ontopbutton    (c),
---            awful.titlebar.widget.closebutton    (c),
---            layout = wibox.layout.fixed.horizontal()
---        },
---        layout = wibox.layout.align.horizontal
---    }
---end)
-
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)
   c:emit_signal("request::activate", "mouse_enter", { raise = false })
@@ -560,7 +527,6 @@ end)
 
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
--- }}}
 
 -------------------------------
 ---- Gaps
@@ -572,7 +538,4 @@ beautiful.useless_gap = 4
 ---- Autostart
 -------------------------------
 
-awful.spawn.with_shell("picom --config ~/projects/my-setup/picom.conf")
-awful.spawn.with_shell("redshift -P -O 4500")
-awful.spawn.with_shell("nm-applet")
-awful.spawn.with_shell("blueman-applet")
+awful.spawn.with_shell("~/projects/my-setup/autostart.sh")
