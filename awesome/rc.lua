@@ -55,8 +55,7 @@ end
 
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
-local user_theme = dofile("/home/ian/projects/my-setup/awesome/theme.lua")
-
+local user_theme = dofile(os.getenv("HOME") .. "/projects/my-setup/awesome/theme.lua")
 for k, v in pairs(user_theme) do beautiful[k] = v end
 
 terminal               = "kitty"
@@ -491,12 +490,6 @@ awful.rules.rules = {
     properties = { floating = true }
   },
 
-  -- Add titlebars to normal clients and dialogs
-  -- {
-  --   rule_any = { type = { "normal", "dialog" } },
-  --   properties = { titlebars_enabled = true }
-  -- },
-
   -- Set Firefox to always map on the tag named "2" on screen 1.
   -- { rule = { class = "Firefox" },
   --   properties = { screen = 1, tag = "2" } },
@@ -538,4 +531,4 @@ beautiful.useless_gap = 4
 ---- Autostart
 -------------------------------
 
-awful.spawn.with_shell("~/projects/my-setup/autostart.sh")
+awful.spawn.with_shell("~/projects/my-setup/scripts/autostart.sh")
