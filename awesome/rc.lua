@@ -321,7 +321,12 @@ globalkeys = gears.table.join(
     { description = "show the menubar", group = "launcher" }),
 
   -- Print
-  awful.key({}, "Print", function() awful.spawn("gnome-screenshot -i") end)
+  awful.key({}, "Print", function() awful.spawn("gnome-screenshot -i") end),
+
+  -- Audio
+  awful.key({ }, "XF86AudioRaiseVolume", function() awful.spawn("amixer set Master 5%+")end),
+  awful.key({ }, "XF86AudioLowerVolume", function() awful.spawn("amixer set Master 5%-")end),
+  awful.key({ }, "XF86AudioMute", function() awful.spawn("amixer set Master toggle")end)
 )
 
 clientkeys = gears.table.join(
@@ -519,7 +524,7 @@ client.connect_signal("mouse::enter", function(c)
 end)
 
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+--  client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
 -------------------------------
 ---- Gaps
