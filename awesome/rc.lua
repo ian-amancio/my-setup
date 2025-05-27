@@ -326,7 +326,17 @@ globalkeys = gears.table.join(
   -- Audio
   awful.key({}, "XF86AudioRaiseVolume", function() awful.spawn("amixer set Master 5%+") end),
   awful.key({}, "XF86AudioLowerVolume", function() awful.spawn("amixer set Master 5%-") end),
-  awful.key({}, "XF86AudioMute", function() awful.spawn("amixer set Master toggle") end)
+  awful.key({}, "XF86AudioMute", function() awful.spawn("amixer set Master toggle") end),
+
+  -- Brightness
+  awful.key({}, "XF86MonBrightnessDown", function() awful.spawn("brightnessctl set 10%-") end),
+  awful.key({}, "XF86MonBrightnessUp", function() awful.spawn("brightnessctl set 10%+") end),
+
+  -- Media
+  awful.key({}, "XF86AudioPlay", function() awful.spawn("playerctl play-pause") end),
+  awful.key({}, "XF86AudioNext", function() awful.spawn("playerctl next") end),
+  awful.key({}, "XF86AudioPrev", function() awful.spawn("playerctl previous") end),
+  awful.key({}, "XF86AudioStop", function() awful.spawn("playerctl stop") end)
 )
 
 clientkeys = gears.table.join(
@@ -444,7 +454,6 @@ root.keys(globalkeys)
 ---- Rules
 -------------------------------
 
--- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
   -- All clients will match this rule.
   {
