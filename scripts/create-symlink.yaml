@@ -1,0 +1,44 @@
+---
+- name: Create symlinks
+  hosts: localhost
+  gather_facts: false
+  vars:
+    user_home: "/home/ian"
+    setup_dir: "{{ user_home }}/projects/my-setup"
+    symlinks:
+      - src: "{{ setup_dir }}/awesome"
+        dest: "{{ user_home }}/.config/awesome"
+      - src: "{{ setup_dir }}/config/fastfetch"
+        dest: "{{ user_home }}/.config/fastfetch"
+      - src: "{{ setup_dir }}/config/kitty"
+        dest: "{{ user_home }}/.config/kitty"
+      - src: "{{ setup_dir }}/config/.zshrc"
+        dest: "{{ user_home }}/.zshrc"
+
+  tasks:
+    - name: Check destination status
+      stat:
+        path: "{{ item.dest }}"
+        follow: false
+      loop: "{{ symlinks }}"
+      register: dest_stats
+
+    - name: Backup existing destination if not a symlink
+      command: mv "{{ item.1.dest }}" "{{ item.1.dest }}.backup"
+      when: item.0.stat.exists and not item.0.stat.islnk
+      loop: "{{ dest_stats.results|zip(symlinks)|list }}"
+
+    - name: Remove original destination if not a symlink
+      file:
+        path: "{{ item.1.dest }}"
+        state: absent
+      when: item.0.stat.exists and not item.0.stat.islnk
+      loop: "{{ dest_stats.results|zip(symlinks)|list }}"
+
+    - name: Create symlink to configuration
+      file:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        state: link
+        force: true
+      loop: "{{ symlinks }}"

@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-picom --config ~/projects/my-setup/picom.conf &
+picom --config ~/projects/my-setup/config/picom.conf &
 redshift -P -O 4500 &
-#nm-applet &
 blueman-applet &
 xrandr --output HDMI-1 --auto --right-of eDP-1 &
-feh --bg-scale ~/me/wallpaper/chess.jpg
+feh --bg-fill ~/me/wallpaper/pexels-1.jpg
